@@ -18,12 +18,12 @@ export WendlandC2, Gaussian, CubicSpline, WendlandC4
 
 abstract type SPHConv{N} <: AbstractConv{N} end
 
-@inline function value(r::Real, h::Real, conv::SPHConv{N}) where {N}
-    return __value(r, 1/h, conv)
+@inline function value(conv::SPHConv{N}, r::Real, h::Real) where {N}
+    return __value(conv, r, 1/h)
 end
 
-@inline function gradient(r::Real, h::Real, conv::SPHConv{N}) where {N}
-    return __gradient(r, 1/h, conv)
+@inline function gradient(conv::SPHConv{N}, r::Real, h::Real) where {N}
+    return __gradient(conv, r, 1/h)
 end
 
 const W = value
@@ -39,9 +39,9 @@ struct WendlandC2{T<:AbstractFloat,N} <: SPHConv{N} end
 @inline sigma(::WendlandC2{T,3}) where {T} = T(21 / (16 * pi))
 
 @inline @fastmath function __value(
+    conv::WendlandC2{T,N},
     r::Real,
     hinv::Real,
-    conv::WendlandC2{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     val =
@@ -52,9 +52,9 @@ struct WendlandC2{T<:AbstractFloat,N} <: SPHConv{N} end
 end
 
 @inline @fastmath function __gradient(
+    conv::WendlandC2{T,N},
     r::Real,
     hinv::Real,
-    conv::WendlandC2{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     grad =
@@ -73,9 +73,9 @@ struct Gaussian{T<:AbstractFloat,N} <: SPHConv{N} end
 @inline sigma(::Gaussian{T,3}) where {T} = T(1 / sqrt(pi * pi * pi))
 
 @inline @fastmath function __value(
+    conv::Gaussian{T,N},
     r::Real,
     hinv::Real,
-    conv::Gaussian{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     val = q < ratio(conv) ? sigma(conv) * exp(-q*q) * power(hinv, Val(N)) : T(0)
@@ -83,9 +83,9 @@ struct Gaussian{T<:AbstractFloat,N} <: SPHConv{N} end
 end
 
 @inline @fastmath function __gradient(
+    conv::Gaussian{T,N},
     r::Real,
     hinv::Real,
-    conv::Gaussian{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     grad =
@@ -103,9 +103,9 @@ struct CubicSpline{T<:AbstractFloat,N} <: SPHConv{N} end
 @inline sigma(::CubicSpline{T,3}) where {T} = T(1 / pi)
 
 @inline @fastmath function __value(
+    conv::CubicSpline{T,N},
     r::Real,
     hinv::Real,
-    conv::CubicSpline{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     val = T(0)
@@ -119,9 +119,9 @@ struct CubicSpline{T<:AbstractFloat,N} <: SPHConv{N} end
 end
 
 @inline @fastmath function __gradient(
+    conv::CubicSpline{T,N},
     r::Real,
     hinv::Real,
-    conv::CubicSpline{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     grad = T(0)
@@ -144,9 +144,9 @@ struct WendlandC4{T<:AbstractFloat,N} <: SPHConv{N} end
 @inline sigma(::WendlandC4{T,3}) where {T} = T(495.0 / (256.0 * pi))
 
 @inline @fastmath function __value(
+    conv::WendlandC4{T,N},
     r::Real,
     hinv::Real,
-    conv::WendlandC4{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     val =
@@ -160,9 +160,9 @@ struct WendlandC4{T<:AbstractFloat,N} <: SPHConv{N} end
 end
 
 @inline function __gradient(
+    conv::WendlandC4{T,N},
     r::Real,
     hinv::Real,
-    conv::WendlandC4{T,N},
 ) where {T<:AbstractFloat,N}
     q::T = r * hinv
     grad =

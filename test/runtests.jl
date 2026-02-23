@@ -21,26 +21,26 @@ using Pkg
                 for x in Float32.(0.02:0.02:0.1)
                     my_ck = SPHConvs.CubicSpline{Float32,dim}()
                     sp_ck = SPHKernels.Cubic(Float32, dim)
-                    @test SPHConvs.value(x, h, my_ck) ≈
+                    @test SPHConvs.value(my_ck, x, h) ≈
                           SPHKernels.kernel_value(sp_ck, x / (2 * h), 1 / (2 * h))
-                    @test SPHConvs.gradient(x, h, my_ck) ≈
+                    @test SPHConvs.gradient(my_ck, x, h) ≈
                           SPHKernels.kernel_deriv(sp_ck, x / (2 * h), 1 / (2 * h))
                     my_w2k = SPHConvs.WendlandC2{Float32,dim}()
                     sp_w2k = SPHKernels.WendlandC2(Float32, dim)
-                    @test SPHConvs.value(x, h, my_w2k) ≈
+                    @test SPHConvs.value(my_w2k, x, h) ≈
                           SPHKernels.kernel_value(sp_w2k, x / (2 * h), 1 / (2 * h))
-                    @test SPHConvs.gradient(x, h, my_w2k) ≈
+                    @test SPHConvs.gradient(my_w2k, x, h) ≈
                           SPHKernels.kernel_deriv(sp_w2k, x / (2 * h), 1 / (2 * h))
                     my_w4k = SPHConvs.WendlandC4{Float32,dim}()
                     sp_w4k = SPHKernels.WendlandC4(Float32, dim)
-                    @test SPHConvs.value(x, h, my_w4k) ≈
+                    @test SPHConvs.value(my_w4k, x, h) ≈
                           SPHKernels.kernel_value(sp_w4k, x / (2 * h), 1 / (2 * h))
                     # ! seems that `SPHKernels.jl` makes some mistakes
                     # ! see [url](https://github.com/LudwigBoess/SPHKernels.jl/blob/dccf7fd6e34215428e145639e6c1c456f7c4ef10/src/wendland/C4.jl)
                     @test abs(
-                        SPHConvs.gradient(x, h, my_w4k) -
+                        SPHConvs.gradient(my_w4k, x, h) -
                         SPHKernels.kernel_deriv(sp_w4k, x / (2 * h), 1 / (2 * h)),
-                    ) / abs(SPHConvs.gradient(h * Float32(0.7), h, my_w4k)) < 2e-2
+                    ) / abs(SPHConvs.gradient(my_w4k, h * Float32(0.7), h)) < 2e-2
                 end
             end
         end
