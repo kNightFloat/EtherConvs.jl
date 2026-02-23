@@ -1,0 +1,14 @@
+name = "EtherConvs"
+uuid = "0e257a55-af0f-409a-a954-42381b417f86"
+authors = ["ChenyuBao <chenyu.bao@outlook.com>"]
+version = "0.1.0"
+
+[deps]
+EtherMaths = "e9131f1e-6ff8-4b70-992e-15574141dedc"
+Pkg = "44cfe95a-1eb2-52ea-b672-e2afdf69b78f"
+Test = "8dfed614-e22c-5e08-85e1-65c5234f0b40"
+
+[compat]
+EtherMaths = ">=0.1.3"
+Pkg = ">=1.11.0"
+Test = ">=1.11.0"
